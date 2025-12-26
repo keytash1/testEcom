@@ -35,9 +35,6 @@ func (s *TodoService) GetTodo(id int) (*models.Todo, error) {
 	if err != nil {
 		return nil, err
 	}
-	if todo == nil {
-		return nil, errs.ErrNotFound
-	}
 	return todo, nil
 }
 

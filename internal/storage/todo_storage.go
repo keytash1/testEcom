@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"errors"
 	"sync"
 	"todos_manager/internal/errs"
 	"todos_manager/internal/models"
@@ -61,7 +60,7 @@ func (s *Storage) DeleteTodo(id int) error {
 	defer s.mu.Unlock()
 
 	if _, exists := s.todos[id]; !exists {
-		return errors.New("not found") //СВОЯ ОШИБКА
+		return errs.ErrNotFound
 	}
 
 	delete(s.todos, id)
@@ -73,7 +72,7 @@ func (s *Storage) UpdateTodo(id int, updated *models.Todo) (*models.Todo, error)
 	defer s.mu.Unlock()
 	todo, exists := s.todos[id]
 	if !exists {
-		return nil, errors.New("not found") //error
+		return nil, errs.ErrNotFound
 	}
 	// тк у нас put то полностью меняем (был бы patch меняли бы только то что пришло)
 	todo.Title = updated.Title
