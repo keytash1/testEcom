@@ -5,18 +5,25 @@ HTTP-сервер для управления задачами на Golang. Те
 # API
 
 | POST | `/todos` | Создать новую задачу | 201, 400 |
+
 | GET | `/todos` | Получить все задачи | 200 |
+
 | GET | `/todos/{id}` | Получить задачу по id | 200, 400, 404 |
+
 | PUT | `/todos/{id}` | Обновить задачу (полная замена) | 200, 400, 404 |
+
 | DELETE | `/todos/{id}` | Удалить задачу по id | 204, 400, 404 |
 
 # Сервер запустится на http://localhost:8080
 Клонировать репозиторий:
+
 git clone https://github.com/keytash1/testEcom
+
 cd todos_manager
 
 # Запуск в докере
 docker build -t todo-manager .
+
 docker run -p 8080:8080 todo-manager
 
 # Запуск без докера
