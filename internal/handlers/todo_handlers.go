@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"todos_manager/internal/errs"
 	"todos_manager/internal/models"
 	"todos_manager/internal/service"
 )
@@ -24,8 +25,8 @@ func (h *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	todo, err := h.service.CreateTodo(req)
 	if err != nil {
-		switch err.(type) {
-		case *service.ValidationError:
+		switch err {
+		case errs.ValidationError:
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		default:
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -57,8 +58,8 @@ func (h *TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request) {
 
 	todo, err := h.service.GetTodo(id)
 	if err != nil {
-		switch err.(type) {
-		case *service.NotFoundError:
+		switch err {
+		case errs.ErrNotFound:
 			http.Error(w, "Todo not found", http.StatusNotFound)
 		default:
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -79,8 +80,8 @@ func (h *TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	err = h.service.DeleteTodo(id)
 	if err != nil {
-		switch err.(type) {
-		case *service.NotFoundError:
+		switch err {
+		case errs.ErrNotFound:
 			http.Error(w, "Todo not found", http.StatusNotFound)
 		default:
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -104,10 +105,10 @@ func (h *TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	todo, err := h.service.UpdateTodo(id, req)
 	if err != nil {
-		switch err.(type) {
-		case *service.NotFoundError:
+		switch err {
+		case errs.ErrNotFound:
 			http.Error(w, "Todo not found", http.StatusNotFound)
-		case *service.ValidationError:
+		case errs.ValidationError:
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		default:
 			http.Error(w, "Internal server error", http.StatusInternalServerError)

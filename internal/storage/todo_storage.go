@@ -3,6 +3,7 @@ package storage
 import (
 	"errors"
 	"sync"
+	"todos_manager/internal/errs"
 	"todos_manager/internal/models"
 )
 
@@ -49,7 +50,7 @@ func (s *Storage) GetTodo(id int) (*models.Todo, error) {
 	todo, exists := s.todos[id]
 
 	if !exists {
-		return nil, errors.New("not found") //СВОЯ ОШИБКА ПОТОМ
+		return nil, errs.ErrNotFound
 	}
 
 	return todo, nil
