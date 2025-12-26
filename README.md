@@ -1,8 +1,9 @@
-"" 
+# Запуск в докере
 docker build -t todo-manager .
 docker run -p 8080:8080 todo-manager
-go run ".\cmd\server\main.go"
 
+# Запуск без докера
+go run ".\cmd\server\main.go"
 
 # Создать
 curl.exe -X POST http://localhost:8080/todos -H "Content-Type: application/json" -d '{\"title\":\"test\",\"description\":\"test\"}'

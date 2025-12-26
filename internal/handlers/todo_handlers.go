@@ -5,15 +5,15 @@ import (
 	"net/http"
 	"strconv"
 	"todos_manager/internal/errs"
+	"todos_manager/internal/interfaces"
 	"todos_manager/internal/models"
-	"todos_manager/internal/service"
 )
 
 type TodoHandler struct {
-	service *service.TodoService
+	service interfaces.Service
 }
 
-func NewTodoHandler(service *service.TodoService) *TodoHandler {
+func NewTodoHandler(service interfaces.Service) *TodoHandler {
 	return &TodoHandler{service: service}
 }
 

@@ -2,15 +2,15 @@ package service
 
 import (
 	"todos_manager/internal/errs"
+	"todos_manager/internal/interfaces"
 	"todos_manager/internal/models"
-	"todos_manager/internal/storage"
 )
 
 type TodoService struct {
-	storage *storage.Storage
+	storage interfaces.Storage
 }
 
-func NewTodoService(storage *storage.Storage) *TodoService {
+func NewTodoService(storage interfaces.Storage) *TodoService {
 	return &TodoService{storage: storage}
 }
 
@@ -50,15 +50,15 @@ func (s *TodoService) UpdateTodo(id int, req models.UpdateTodoInput) (*models.To
 	if req.Title == "" {
 		return nil, errs.ValidationError
 	}
-	oldtodo, err := s.GetTodo(id)
+	oldTodo, err := s.GetTodo(id)
 	if err != nil {
 		return nil, err
 	}
-	newtodo := &models.Todo{
-		ID:          oldtodo.ID,
+	newTodo := &models.Todo{
+		ID:          oldTodo.ID,
 		Title:       req.Title,
 		Description: req.Description,
 		Completed:   req.Completed,
 	}
-	return s.storage.UpdateTodo(id, newtodo)
+	return s.storage.UpdateTodo(id, newTodo)
 }
