@@ -38,30 +38,22 @@ go run ".\cmd\server\main.go"
 
 # Пример использования API
 # Создать
-curl -X POST http://localhost:8080/todos \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Пройти стажировку в ecom.tech","description":"Важно!"}'
+curl -X POST http://localhost:8080/todos -H "Content-Type: application/json" -d '{"title":"Complete internship at ecom.tech","description":"Important!"}'
 
 # Получить все
 curl http://localhost:8080/todos
 
-# Получить по ID  
+# Получить по ID
 curl http://localhost:8080/todos/1
 
 # Обновить задачу (заменить)
-curl -X PUT http://localhost:8080/todos/1 \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Перейти в штат ecom.tech","description":"Очень важно!","completed":true}'
+curl -X PUT http://localhost:8080/todos/1 -H "Content-Type: application/json" -d '{"title":"Get hired at ecom.tech","description":"Very important!","completed":true}'
 
 # Отметить задачу как выполненную
-curl -X PATCH http://localhost:8080/todos/1/complete \
-  -H "Content-Type: application/json" \
-  -d '{"completed": true}'
+curl -X PATCH http://localhost:8080/todos/1/complete -H "Content-Type: application/json" -d '{"completed": true}'
 
 # Снять отметку выполненной
-curl -X PATCH http://localhost:8080/todos/1/complete \
-  -H "Content-Type: application/json" \
-  -d '{"completed": false}'
+curl -X PATCH http://localhost:8080/todos/1/complete -H "Content-Type: application/json" -d '{"completed": false}'
 
 # Удалить
 curl -X DELETE http://localhost:8080/todos/1
