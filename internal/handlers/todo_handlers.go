@@ -51,7 +51,7 @@ func (h *TodoHandler) ListTodos(w http.ResponseWriter, r *http.Request) {
 func (h *TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
-	if err != nil {
+	if err != nil || id <= 0 {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 		return
 	}
