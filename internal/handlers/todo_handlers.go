@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"todos_manager/internal/errs"
@@ -25,12 +26,11 @@ func (h *TodoHandler) CreateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	todo, err := h.service.CreateTodo(req)
 	if err != nil {
-		switch err {
-		case errs.ValidationError:
+		if errors.Is(err, errs.ValidationError) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
-		default:
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
 		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -58,12 +58,11 @@ func (h *TodoHandler) GetTodo(w http.ResponseWriter, r *http.Request) {
 
 	todo, err := h.service.GetTodo(id)
 	if err != nil {
-		switch err {
-		case errs.ErrNotFound:
-			http.Error(w, "Todo not found", http.StatusNotFound)
-		default:
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		if errors.Is(err, errs.ErrNotFound) {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
 		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -80,12 +79,11 @@ func (h *TodoHandler) DeleteTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	err = h.service.DeleteTodo(id)
 	if err != nil {
-		switch err {
-		case errs.ErrNotFound:
-			http.Error(w, "Todo not found", http.StatusNotFound)
-		default:
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		if errors.Is(err, errs.ErrNotFound) {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
 		}
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -105,10 +103,10 @@ func (h *TodoHandler) UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	}
 	todo, err := h.service.UpdateTodo(id, req)
 	if err != nil {
-		switch err {
-		case errs.ErrNotFound:
-			http.Error(w, "Todo not found", http.StatusNotFound)
-		case errs.ValidationError:
+		switch {
+		case errors.Is(err, errs.ErrNotFound):
+			http.Error(w, err.Error(), http.StatusNotFound)
+		case errors.Is(err, errs.ValidationError):
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		default:
 			http.Error(w, "Internal server error", http.StatusInternalServerError)

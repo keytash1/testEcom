@@ -14,10 +14,10 @@ func NewRouter(handler *handlers.TodoHandler) http.Handler {
 	mux.HandleFunc("GET /todos/{id}", handler.GetTodo)
 	mux.HandleFunc("PUT /todos/{id}", handler.UpdateTodo)
 	mux.HandleFunc("DELETE /todos/{id}", handler.DeleteTodo)
-	return logWiddleware(mux)
+	return logMiddleware(mux)
 }
 
-func logWiddleware(mux http.Handler) http.Handler {
+func logMiddleware(mux http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		lrw := &loggingResponseWriter{

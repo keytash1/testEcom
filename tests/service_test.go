@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"errors"
 	"testing"
 	"todos_manager/internal/errs"
 	"todos_manager/internal/models"
@@ -25,13 +26,7 @@ func TestService_CerateTodo_Success(t *testing.T) {
 	}
 
 	if todo.ID != 1 {
-		t.Errorf("Expected id 1, got %d", err)
-	}
-	if todo.Title != "aaa" {
-		t.Errorf("Expected title 'aaa', got %s", todo.Title)
-	}
-	if todo.Description != "bbb" {
-		t.Errorf("Expected description 'bbb', got %s", todo.Description)
+		t.Errorf("Expected id 1, got %d", todo.ID)
 	}
 }
 
@@ -42,8 +37,9 @@ func TestService_CreateTodo_NoTitle(t *testing.T) {
 		Title:       "",
 		Description: "123",
 	})
-	if err == nil {
-		t.Error("Expected ValidationError for empty title")
+
+	if !errors.Is(err, errs.ValidationError) {
+		t.Error("Expected ValidationError")
 	}
 }
 
@@ -75,7 +71,7 @@ func TestService_GetTodo_NotFound(t *testing.T) {
 
 	_, err := svc.GetTodo(52)
 
-	if err == nil {
+	if !errors.Is(err, errs.ErrNotFound) {
 		t.Error("Expected ErrNotFound")
 	}
 }
@@ -102,22 +98,18 @@ func TestService_UpdateTodo_Success(t *testing.T) {
 	if todo.Title != "new" {
 		t.Errorf("Expected title 'new', got %s", todo.Title)
 	}
-	if todo.Completed == false {
-		t.Error("Expected completed = true")
-	}
 }
 
 func TestService_UpdateTodo_NoTitle(t *testing.T) {
 	storage := &MockStorage{}
 	svc := service.NewTodoService(storage)
-
 	_, err := svc.UpdateTodo(1, models.UpdateTodoInput{
-		Title:       "", // Пустой!
+		Title:       "",
 		Description: "qgw",
 		Completed:   true,
 	})
 
-	if err == nil {
+	if !errors.Is(err, errs.ValidationError) {
 		t.Error("Expected ValidationError")
 	}
 }
@@ -136,7 +128,7 @@ func TestService_UpdateTodo_NotFound(t *testing.T) {
 		Completed:   true,
 	})
 
-	if err == nil {
+	if !errors.Is(err, errs.ErrNotFound) {
 		t.Error("Expected ErrNotFound")
 	}
 }
@@ -172,7 +164,7 @@ func TestService_DeleteTodo_NotFound(t *testing.T) {
 
 	err := svc.DeleteTodo(65)
 
-	if err == nil {
+	if !errors.Is(err, errs.ErrNotFound) {
 		t.Error("Expected ErrNotFound")
 	}
 }

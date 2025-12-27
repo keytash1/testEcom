@@ -7,7 +7,6 @@ type Todo struct {
 	Completed   bool   `json:"completed"`
 }
 
-// сделать dto, di
 // dto
 type CreateTodoInput struct {
 	Title       string `json:"title"`
