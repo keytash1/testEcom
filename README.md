@@ -14,6 +14,12 @@ HTTP-сервер для управления задачами на Golang. Те
 
 | DELETE | `/todos/{id}` | Удалить задачу по id | 204, 400, 404 |
 
+| PATCH | `/todos/{id}/complete` | Изменить статус завершенности задачи | 200, 400, 404 |
+
+# Доп. фича
+
+PATCH ручка чтобы можно было удобно изменить статус задачи по id, просто передав true или false.
+
 # Сервер запустится на http://localhost:8080
 Клонировать репозиторий:
 
@@ -46,6 +52,16 @@ curl http://localhost:8080/todos/1
 curl -X PUT http://localhost:8080/todos/1 \
   -H "Content-Type: application/json" \
   -d '{"title":"Перейти в штат ecom.tech","description":"Очень важно!","completed":true}'
+
+# Отметить задачу как выполненную
+curl -X PATCH http://localhost:8080/todos/1/complete \
+  -H "Content-Type: application/json" \
+  -d '{"completed": true}'
+
+# Снять отметку выполненной
+curl -X PATCH http://localhost:8080/todos/1/complete \
+  -H "Content-Type: application/json" \
+  -d '{"completed": false}'
 
 # Удалить
 curl -X DELETE http://localhost:8080/todos/1

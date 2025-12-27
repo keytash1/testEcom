@@ -348,3 +348,68 @@ func TestHandlers_ListTodos_Success(t *testing.T) {
 		t.Errorf("Expected 2 todos, got %d", len(response))
 	}
 }
+
+func TestHandlers_CompleteTodo_Success(t *testing.T) {
+	svc := &MockService{
+		CompleteTodoFunc: func(id int, completed bool) (*models.Todo, error) {
+			return &models.Todo{
+				ID:          id,
+				Title:       "title",
+				Description: "desc",
+				Completed:   completed,
+			}, nil
+		},
+	}
+	handler := handlers.NewTodoHandler(svc)
+
+	body, _ := json.Marshal(models.CompleteInput{Completed: true})
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("PATCH /todos/{id}/complete", handler.CompleteTodo)
+
+	req := httptest.NewRequest("PATCH", "/todos/1/complete", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	mux.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Expected 200, got %d", w.Code)
+	}
+
+	var response models.Todo
+	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
+		t.Fatalf("Failed to unmarshal response: %v", err)
+	}
+
+	if !response.Completed {
+		t.Error("Expected Completed = true")
+	}
+	if response.ID != 1 {
+		t.Errorf("Expected ID 1, got %d", response.ID)
+	}
+}
+
+func TestHandlers_CompleteTodo_NotFound(t *testing.T) {
+	svc := &MockService{
+		CompleteTodoFunc: func(id int, completed bool) (*models.Todo, error) {
+			return nil, errs.ErrNotFound
+		},
+	}
+	handler := handlers.NewTodoHandler(svc)
+
+	body, _ := json.Marshal(models.CompleteInput{Completed: true})
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("PATCH /todos/{id}/complete", handler.CompleteTodo)
+
+	req := httptest.NewRequest("PATCH", "/todos/52/complete", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	mux.ServeHTTP(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected 404 Not Found, got %d", w.Code)
+	}
+}

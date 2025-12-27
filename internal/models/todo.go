@@ -18,3 +18,7 @@ type UpdateTodoInput struct {
 	Description string `json:"description"`
 	Completed   bool   `json:"completed"`
 }
+
+type CompleteInput struct {
+	Completed bool `json:"completed"`
+}

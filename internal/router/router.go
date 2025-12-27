@@ -14,6 +14,7 @@ func NewRouter(handler *handlers.TodoHandler) http.Handler {
 	mux.HandleFunc("GET /todos/{id}", handler.GetTodo)
 	mux.HandleFunc("PUT /todos/{id}", handler.UpdateTodo)
 	mux.HandleFunc("DELETE /todos/{id}", handler.DeleteTodo)
+	mux.HandleFunc("PATCH /todos/{id}/complete", handler.CompleteTodo)
 	return logMiddleware(mux)
 }
 

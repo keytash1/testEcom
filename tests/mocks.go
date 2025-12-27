@@ -33,11 +33,12 @@ func (m *MockStorage) DeleteTodo(id int) error {
 }
 
 type MockService struct {
-	CreateTodoFunc func(models.CreateTodoInput) (*models.Todo, error)
-	GetTodoFunc    func(int) (*models.Todo, error)
-	ListTodosFunc  func() ([]*models.Todo, error)
-	UpdateTodoFunc func(int, models.UpdateTodoInput) (*models.Todo, error)
-	DeleteTodoFunc func(int) error
+	CreateTodoFunc   func(models.CreateTodoInput) (*models.Todo, error)
+	GetTodoFunc      func(int) (*models.Todo, error)
+	ListTodosFunc    func() ([]*models.Todo, error)
+	UpdateTodoFunc   func(int, models.UpdateTodoInput) (*models.Todo, error)
+	DeleteTodoFunc   func(int) error
+	CompleteTodoFunc func(int, bool) (*models.Todo, error)
 }
 
 func (m *MockService) CreateTodo(req models.CreateTodoInput) (*models.Todo, error) {
@@ -58,4 +59,8 @@ func (m *MockService) UpdateTodo(id int, req models.UpdateTodoInput) (*models.To
 
 func (m *MockService) DeleteTodo(id int) error {
 	return m.DeleteTodoFunc(id)
+}
+
+func (m *MockService) CompleteTodo(id int, completed bool) (*models.Todo, error) {
+	return m.CompleteTodoFunc(id, completed)
 }

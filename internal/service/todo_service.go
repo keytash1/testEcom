@@ -62,3 +62,12 @@ func (s *TodoService) UpdateTodo(id int, req models.UpdateTodoInput) (*models.To
 	}
 	return s.storage.UpdateTodo(id, newTodo)
 }
+
+func (s *TodoService) CompleteTodo(id int, completed bool) (*models.Todo, error) {
+	todo, err := s.GetTodo(id)
+	if err != nil {
+		return nil, err
+	}
+	todo.Completed = completed
+	return s.storage.UpdateTodo(id, todo)
+}

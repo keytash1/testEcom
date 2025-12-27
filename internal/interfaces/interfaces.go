@@ -16,4 +16,5 @@ type Service interface {
 	GetTodo(id int) (*models.Todo, error)
 	UpdateTodo(id int, req models.UpdateTodoInput) (*models.Todo, error)
 	DeleteTodo(id int) error
+	CompleteTodo(id int, completed bool) (*models.Todo, error)
 }

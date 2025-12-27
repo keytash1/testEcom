@@ -8,7 +8,7 @@ import (
 	"todos_manager/internal/service"
 )
 
-func TestService_CerateTodo_Success(t *testing.T) {
+func TestService_CreateTodo_Success(t *testing.T) {
 	storage := &MockStorage{
 		CreateTodoFunc: func(todo *models.Todo) (*models.Todo, error) {
 			return &models.Todo{ID: 1, Title: todo.Title, Description: todo.Description}, nil
@@ -184,5 +184,54 @@ func TestService_DeleteTodo_Success(t *testing.T) {
 
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
+	}
+}
+
+func TestService_CompleteTodo_Success(t *testing.T) {
+	storage := &MockStorage{
+		GetTodoFunc: func(id int) (*models.Todo, error) {
+			return &models.Todo{
+				ID:          id,
+				Title:       "test",
+				Description: "desc",
+				Completed:   false,
+			}, nil
+		},
+		UpdateTodoFunc: func(id int, updated *models.Todo) (*models.Todo, error) {
+			return updated, nil
+		},
+	}
+
+	svc := service.NewTodoService(storage)
+
+	todo, err := svc.CompleteTodo(1, true)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	if !todo.Completed {
+		t.Error("Expected Completed = true")
+	}
+
+	todo, err = svc.CompleteTodo(1, false)
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	if todo.Completed {
+		t.Error("Expected Completed = false")
+	}
+}
+
+func TestService_CompleteTodo_NotFound(t *testing.T) {
+	storage := &MockStorage{
+		GetTodoFunc: func(id int) (*models.Todo, error) {
+			return nil, errs.ErrNotFound
+		},
+	}
+
+	svc := service.NewTodoService(storage)
+
+	_, err := svc.CompleteTodo(52, true)
+	if !errors.Is(err, errs.ErrNotFound) {
+		t.Error("Expected ErrNotFound")
 	}
 }
