@@ -1,6 +1,6 @@
 # Todo Manager
 
-HTTP-сервер для управления задачами на Golang. Тестовое задание для ecom.tech
+HTTP-сервер для управления задачами на Golang. 
 
 # API
 
@@ -23,7 +23,7 @@ PATCH ручка чтобы можно было удобно изменить с
 # Сервер запустится на http://localhost:8080
 Клонировать репозиторий:
 
-git clone https://github.com/keytash1/testEcom
+git clone https://github.com/keytash1/Task-Manager
 
 cd todos_manager
 
